@@ -1,12 +1,12 @@
 mod models;
-mod todo;
-use std::io;
+mod todo_list;
 
-use models::Todo;
-use todo::{add_task, complete_task, delete_task, show_tasks};
+use std::io;
+use todo_list::TodoList;
+
 fn main() {
-    let mut todos: Vec<Todo> = Vec::new();
-    let mut counter = 0;
+    let mut app = TodoList::new();
+
     loop {
         println!("\n===== TODO APP =====");
         println!("1. Add Task");
@@ -16,41 +16,53 @@ fn main() {
         println!("5. Exit");
 
         let mut choice = String::new();
+
         io::stdin().read_line(&mut choice).unwrap();
 
         match choice.trim() {
             "1" => {
+                println!("Enter Task:");
+
                 let mut title = String::new();
-                println!("Enter Task: ");
+
                 io::stdin().read_line(&mut title).unwrap();
 
-                add_task(&mut todos, &mut counter, title);
+                app.add(title.trim().to_string());
             }
 
             "2" => {
-                show_tasks(&todos);
+                app.show();
             }
+
             "3" => {
-                println!("Enter task id: ");
+                println!("Enter task id:");
+
                 let mut id = String::new();
+
                 io::stdin().read_line(&mut id).unwrap();
 
                 let id: u32 = id.trim().parse().unwrap();
 
-                complete_task(&mut todos, id)
+                app.complete(id);
             }
+
             "4" => {
-                println!("Enter task id: ");
+                println!("Enter task id:");
+
                 let mut id = String::new();
+
                 io::stdin().read_line(&mut id).unwrap();
 
                 let id: u32 = id.trim().parse().unwrap();
-                delete_task(&mut todos, id);
+
+                app.delete(id);
             }
+
             "5" => {
                 println!("Goodbye!");
                 break;
             }
+
             _ => {
                 println!("Invalid choice");
             }
